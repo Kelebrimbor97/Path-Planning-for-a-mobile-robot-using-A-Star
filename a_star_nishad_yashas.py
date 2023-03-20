@@ -3,7 +3,6 @@ import numpy as np
 import pygame
 import cv2
 import time
-# import matplotlib.pyplot as plt
 
 from math import cos,sin
 from queue import PriorityQueue 
@@ -45,9 +44,6 @@ def line_check(pt_a, pt_b, pt_center, check_pt):
     check_val = np.dot(line_arr, check_pt_line)    #Plug center in line equation
     check_val = np.sum(check_val)                  #Sum equation to get value of line
     check_sgn = np.sign(check_val)                 #Get sign of center
-
-    # print('Center sign:', check_sgn,',Shape:',np.shape(check_sgn),',type:',type(check_sgn))
-    # print('Center sign:', cent_sgn,',Shape:',np.shape(cent_sgn),',type:',type(cent_sgn),',perpendicular distance:',check_dist, 'Distance from a:', radial_a)
 
     if cent_sgn==check_sgn or check_sgn==0:
         
@@ -104,7 +100,6 @@ def half_plane_check(og_check_pt):
     check_1.append(line_check(np.array([100,100]), np.array([150,100]), np.array([125,50]), check_pt))
     check_1.append(line_check(np.array([150,100]), np.array([150,0]), np.array([125,50]), check_pt))
     check_1 = np.sum(check_1)
-    # print("check_1",check_1)
     check.append(check_1==3)
 
     #Rect 2 check
@@ -113,7 +108,6 @@ def half_plane_check(og_check_pt):
     check_2.append(line_check(np.array([100,150]), np.array([150,150]), np.array([125,200]), check_pt))
     check_2.append(line_check(np.array([150,150]), np.array([150,250]), np.array([125,200]), check_pt))
     check_2 = np.sum(check_2)
-    # print("check_2",check_2)
     check.append(check_2==3)
 
     #Hexagon check
@@ -127,10 +121,8 @@ def half_plane_check(og_check_pt):
         hex_b = hex_pts_here[i-1]
 
         hex_check.append(line_check(hex_a, hex_b, hex_center, check_pt))
-        # print(i,'th  pair', hex_a, hex_b)
 
     hex_check = np.sum(hex_check)
-    # print("hex_check",hex_check)
     check.append(hex_check>5)
 
 
@@ -147,7 +139,6 @@ def half_plane_check(og_check_pt):
         tri_check.append(line_check(tri_a, tri_b, tri_center, check_pt))
 
     tri_check = np.sum(tri_check)
-    # print("tri_check",tri_check)
     check.append(tri_check>2)
 
     check = np.sum(check)
@@ -213,11 +204,6 @@ def gen_map(hex_pts):
     cv2.fillPoly(map_area, [tri_pts], (0,255,0))
 
     map_area = cv2.cvtColor(map_area,cv2.COLOR_BGR2RGB)
-
-    # plt.figure('Generated Map')
-    # plt.imshow(map_area, cmap='gray')
-    # plt.show()
-
     return map_area
 
 
@@ -227,7 +213,6 @@ def get_pathpoints(check_key, initial):
     k = check_key
     while(k!=initial):
         
-        # print(openList[k].x,openList[k].y)
         k = closed_nodes[k][2]
         pathpoints.append(k)
 
@@ -252,9 +237,7 @@ def action1(key,goal):
     key_x = round_to_nearest_half(float(new_coordinates[0]))
     key_y = round_to_nearest_half(float(new_coordinates[1]))
     key_theta = round_to_nearest_half(float(new_coordinates[2]))%360
-    # print("type",type(key_x))
     child_key = (key_x,key_y,key_theta)
-    # print("yeh",child_key)
     create_child(key,child_key,goal)
     
 
@@ -267,7 +250,6 @@ def action2(key,goal):
     key_x = round_to_nearest_half(float(new_coordinates[0]))
     key_y = round_to_nearest_half(float(new_coordinates[1]))
     key_theta = round_to_nearest_half(float(new_coordinates[2]))%360
-    # print("type",type(key_x))
     child_key = (key_x,key_y,key_theta)
     create_child(key,child_key,goal)
     
@@ -281,7 +263,6 @@ def action3(key,goal):
     key_x = round_to_nearest_half(float(new_coordinates[0]))
     key_y = round_to_nearest_half(float(new_coordinates[1]))
     key_theta = round_to_nearest_half(float(new_coordinates[2]))%360
-    # print("type",type(key_x))
     child_key = (key_x,key_y,key_theta)
     create_child(key,child_key,goal)
     
@@ -295,7 +276,6 @@ def action4(key,goal):
     key_x = round_to_nearest_half(float(new_coordinates[0]))
     key_y = round_to_nearest_half(float(new_coordinates[1]))
     key_theta = round_to_nearest_half(float(new_coordinates[2]))%360
-    # print("type",type(key_x))
     child_key = (key_x,key_y,key_theta)
     create_child(key,child_key,goal)
     
@@ -309,7 +289,6 @@ def action5(key,goal):
     key_x = round_to_nearest_half(float(new_coordinates[0]))
     key_y = round_to_nearest_half(float(new_coordinates[1]))
     key_theta = round_to_nearest_half(float(new_coordinates[2]))%360
-    # print("type",type(key_x))
     child_key = (key_x,key_y,key_theta)
     create_child(key,child_key,goal)
     
@@ -317,23 +296,15 @@ def action5(key,goal):
 def round_to_half(number):
     return (round(number*2))/2
 
-#  node[(key.x,key.y,key.theta)] = [cost_to_come,total_cost,(parent.x,parent.y),visited]
-
 def get_c2g(key,goal):
-    # print("dist",key,goal)
-    # return np.linalg.norm(np.array(goal)-np.array(key))
     return np.sqrt(((key[0]-goal[0])**2)+((key[1]-goal[1])**2))
 
 
 def new_c2c(key1,key2):
-    # print(type(key2[0]))
-    # print("idhar")
-    # print(type(key1[0]))
     temp1 = key1[0] - key2[0]
     temp2 = key1[1] - key2[1]
     temp3 = temp1**2 + temp2**2
 
-    # return open_nodes[key1][0] + np.linalg.norm(np.array(key2)-np.array(key1))
     return closed_nodes[key1][0] + np.sqrt(temp3)
 
 def create_child(key,child1_key,goal):
@@ -356,7 +327,6 @@ def create_child(key,child1_key,goal):
             if c2c < open_nodes[child1_key][0]:
                 total_cost = c2c+ get_c2g(child1_key,goal)
                 open_nodes[child1_key] = [c2c,total_cost,key]
-    # print("half check",half_plane_check(child_coordinates))
 
     
 
@@ -383,7 +353,6 @@ pathpoints = []
 step_size  = 10 
 threshold = 0.5
 goal_reached = 0
-# print('Global variables created!', open_nodes)
 
 # open_nodes = {}
 wrong_coordinates = True
@@ -434,7 +403,6 @@ while wrong_coordinates:
 
 clearance = int(input('Enter clearance: '))
 step_size = int(input('Enter step size: '))
-# print('Open nodes:', open_nodes)
 open_nodes[initial] = [0,get_c2g(initial,goal),initial]
 
     
@@ -448,13 +416,10 @@ map_area = gen_map(hex_pts)        #Creates map area
 while len(open_nodes) is not 0 and goal_reached is False:  
 
     i += 1
-    # print("length of open nodes",open_nodes.keys())
-    # print("length of open nodes",open_nodes)
     open_nodes = dict(sorted(open_nodes.items(), key=lambda x:x[1][1],reverse = True))
     check_node = open_nodes.popitem()
     print("check node",check_node)
     check_key = check_node[0]
-    # print(open_nodes[check_key])
     closed_nodes[check_key] = [check_node[1][0],check_node[1][1],check_node[1][2]]
     curr_loc = [int(check_key[0]), int(check_key[1])]
     parent_loc = [int(check_node[1][2][0]), int(check_node[1][2][1])]
@@ -462,15 +427,12 @@ while len(open_nodes) is not 0 and goal_reached is False:
     map_area =cv2.arrowedLine(map_area, tuple(parent_loc), tuple(curr_loc), (245,66,206), 1)
     cv2.imshow('A Star', cv2.flip(map_area,0))
     if cv2.waitKey(1) & 0XFF == ord('q'):cv2.destroyAllWindows()
-    # if i == 10:
-    #     goal_reached = 1
 
 
     if if_node_goal(check_key,goal):
         goal_reached = 1
         get_pathpoints(check_key, initial)
     else:
-        # pass
         action1(check_key, goal)
         action2(check_key, goal)
         action3(check_key, goal)
@@ -479,7 +441,6 @@ while len(open_nodes) is not 0 and goal_reached is False:
 if goal_reached == 1:
     cv2.destroyAllWindows()
     print("Goal reached")
-    # print(closed_nodes)
 
     path_new = []
     for i in pathpoints:
